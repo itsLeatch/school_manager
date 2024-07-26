@@ -40,29 +40,95 @@ class AppPage {
 }
 
 class _HomescreenState extends State<Homescreen> {
+  PageController pageController = PageController();
+
+  final Duration pageAnimationDuartion = const Duration(milliseconds: 300);
+  final Curve pageAnimationCurve = Curves.easeInOut;
+
+  // update this value if some touch inputs happen, without the navigation bar involved
+  int currentPageIndex = 0;
+
+  //keep the page index even on state changes
+  final Key pageViewKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    pageController.addListener(() {
+      setState(() {
+        currentPageIndex = pageController.page?.round() ?? 0;
+        print(currentPageIndex);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<AppPage> pages = [
-      AppPage("Home", Icons.home, Container()),
-      AppPage("Subjects", Icons.book, Container()),
-      AppPage("Marks", Icons.grade, Container()),
-      AppPage("Settings", Icons.settings, Container())
+      AppPage(
+          "Settings",
+          Icons.settings,
+          Container(color: Colors.blue)),
+      AppPage(
+          "Home",
+          Icons.home,
+          Container(
+            color: Colors.red,
+          )),
+      AppPage("Subjects", Icons.book, Container(color: Colors.green)),
+      AppPage("Marks", Icons.grade, Container(color: Colors.yellow)),
     ];
 
     return MaterialApp(
-      theme: ThemeData.dark(useMaterial3: true),
+        theme: ThemeData.dark(useMaterial3: true),
         home: appScaffold(
-      navigationBar: NavigationBar(
-        destinations: List.generate(pages.length, (index) {
-          return NavigationDestination(
-              label: pages[index].title, icon: Icon(pages[index].icon));
-        }),
-      ),navigationRail: NavigationRail(selectedIndex: 0,labelType: NavigationRailLabelType.all,
-        destinations: List.generate(pages.length, (index) {
-          return NavigationRailDestination(
-              icon: Icon(pages[index].icon), label: Text(pages[index].title));
-        }),
-      ),body: pages[0].page
-    ));
+            navigationBar: NavigationBar(
+              selectedIndex: currentPageIndex,
+              onDestinationSelected: (value) {
+                setState(() {
+                  pageController.animateToPage(value,
+                      duration: pageAnimationDuartion,
+                      curve: pageAnimationCurve);
+                });
+              },
+              destinations: List.generate(pages.length, (index) {
+                return NavigationDestination(
+                    label: pages[index].title, icon: Icon(pages[index].icon));
+              }),
+            ),
+            navigationRail: NavigationRail(
+              selectedIndex:
+                  currentPageIndex, // this value must be updated when the page changes
+              labelType: NavigationRailLabelType.all,
+              onDestinationSelected: (value) {
+                setState(() {
+                  pageController.animateToPage(value,
+                      duration: pageAnimationDuartion,
+                      curve: pageAnimationCurve);
+                });
+              },
+              destinations: List.generate(pages.length, (index) {
+                return NavigationRailDestination(
+                    icon: Icon(pages[index].icon),
+                    label: Text(pages[index].title));
+              }),
+            ),
+            body: PageView(
+              key: pageViewKey,
+              controller: pageController,
+              scrollDirection: Axis.vertical,
+              children: List.generate(
+                pages.length,
+                (index) {
+                  return pages[index].page;
+                },
+              ),
+            )));
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
 }
