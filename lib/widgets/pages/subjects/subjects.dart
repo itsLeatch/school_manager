@@ -20,24 +20,29 @@ class SubjectListTile extends StatelessWidget {
       height: 72,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color:
-                Color.fromARGB(255, subject.colorR, subject.colorG, subject.colorB),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(child: Center(child: Text(subject.name, style: Theme.of(context).textTheme.headlineMedium,))),
-                IconButton(
-                    onPressed: () {
-                      onEdit(subject);
-                    },
-                    icon: Icon(Icons.edit)),
-                IconButton(onPressed: onRemove, icon: Icon(Icons.delete))
-              ],
+        child: InkWell(
+           onTap: () {
+          onEdit(subject);
+        } ,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Color.fromARGB(
+                  255, subject.colorR, subject.colorG, subject.colorB),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: Center(
+                          child: Text(
+                    subject.name,
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ))),
+                  IconButton(onPressed: onRemove, icon: Icon(Icons.delete))
+                ],
+              ),
             ),
           ),
         ),
@@ -69,55 +74,57 @@ class _SubjectPageState extends State<SubjectPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Subjects",
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            IconButton(
-                onPressed: () {
-                  showAddSubjectDialog(context, null).then((value) {
+    return SafeArea(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Subjects",
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+              IconButton(
+                  onPressed: () {
+                    showAddSubjectDialog(context, null).then((value) {
+                      if (value != null) {
+                        appState.database.write(() {
+                          appState.database.add(value);
+                        });
+                      }
+                    });
+                  },
+                  icon: Icon(Icons.add))
+            ],
+          ),
+          Expanded(
+              child: ListView.builder(
+            itemCount: subjects.length,
+            itemBuilder: (context, index) {
+              return SubjectListTile(
+                subject: subjects[index],
+                onRemove: () {
+                  appState.database.write(() {
+                    appState.database.delete<Subject>(subjects[index]);
+                  });
+                },
+                onEdit: (subject) {
+                  showAddSubjectDialog(context, subject).then((value) {
                     if (value != null) {
                       appState.database.write(() {
-                        appState.database.add(value);
+                        subject.name = value.name;
+                        subject.colorR = value.colorR;
+                        subject.colorG = value.colorG;
+                        subject.colorB = value.colorB;
                       });
                     }
                   });
                 },
-                icon: Icon(Icons.add))
-          ],
-        ),
-        Expanded(
-            child: ListView.builder(
-          itemCount: subjects.length,
-          itemBuilder: (context, index) {
-            return SubjectListTile(
-              subject: subjects[index],
-              onRemove: () {
-                appState.database.write(() {
-                  appState.database.delete<Subject>(subjects[index]);
-                });
-              },
-              onEdit: (subject) {
-                showAddSubjectDialog(context, subject).then((value) {
-                  if (value != null) {
-                    appState.database.write(() {
-                      subject.name = value.name;
-                      subject.colorR = value.colorR;
-                      subject.colorG = value.colorG;
-                      subject.colorB = value.colorB;
-                    });
-                  }
-                });
-              },
-            );
-          },
-        ))
-      ],
+              );
+            },
+          ))
+        ],
+      ),
     );
   }
 }
