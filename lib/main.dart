@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:realm/realm.dart';
 import 'package:school_manager/database/schema.dart';
-import 'package:school_manager/utils/appStates.dart';
 import 'package:school_manager/widgets/basic/appScaffold.dart';
 import 'package:school_manager/widgets/pages/subjects/subjects.dart';
 
@@ -12,6 +11,16 @@ class AppPage {
 
   AppPage(this.title, this.icon, this.page);
 }
+
+class _AppState {
+  Realm database = Realm(Configuration.local([
+    Subject.schema,
+    MarkCollection.schema,
+    SubjectMarksPerCollection.schema
+  ]));
+}
+
+_AppState appState = _AppState();
 
 void main() {
   runApp(Homescreen(pages: [
@@ -62,60 +71,50 @@ class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData.dark(useMaterial3: true),
-        home: AppState(
-          configuration: Configuration.local([
-            Subject.schema,
-            MarkCollection.schema,
-            SubjectMarksPerCollection.schema
-          ]),
-          child: Builder(builder: (context) {
-            return appScaffold(
-                navigationBar: NavigationBar(
-                  selectedIndex: currentPageIndex,
-                  onDestinationSelected: (value) {
-                    setState(() {
-                      pageController.animateToPage(value,
-                          duration: pageAnimationDuartion,
-                          curve: pageAnimationCurve);
-                    });
-                  },
-                  destinations: List.generate(widget.pages.length, (index) {
-                    return NavigationDestination(
-                        label: widget.pages[index].title,
-                        icon: Icon(widget.pages[index].icon));
-                  }),
-                ),
-                navigationRail: NavigationRail(
-                  selectedIndex:
-                      currentPageIndex, // this value must be updated when the page changes
-                  labelType: NavigationRailLabelType.all,
-                  onDestinationSelected: (value) {
-                    setState(() {
-                      pageController.animateToPage(value,
-                          duration: pageAnimationDuartion,
-                          curve: pageAnimationCurve);
-                    });
-                  },
-                  destinations: List.generate(widget.pages.length, (index) {
-                    return NavigationRailDestination(
-                        icon: Icon(widget.pages[index].icon),
-                        label: Text(widget.pages[index].title));
-                  }),
-                ),
-                body: PageView(
-                  key: pageViewKey,
-                  controller: pageController,
-                  scrollDirection: Axis.vertical,
-                  children: List.generate(
-                    widget.pages.length,
-                    (index) {
-                      return widget.pages[index].page;
-                    },
-                  ),
-                ));
-          }),
-        ));
+      theme: ThemeData.dark(useMaterial3: true),
+      home: appScaffold(
+          navigationBar: NavigationBar(
+            selectedIndex: currentPageIndex,
+            onDestinationSelected: (value) {
+              setState(() {
+                pageController.animateToPage(value,
+                    duration: pageAnimationDuartion, curve: pageAnimationCurve);
+              });
+            },
+            destinations: List.generate(widget.pages.length, (index) {
+              return NavigationDestination(
+                  label: widget.pages[index].title,
+                  icon: Icon(widget.pages[index].icon));
+            }),
+          ),
+          navigationRail: NavigationRail(
+            selectedIndex:
+                currentPageIndex, // this value must be updated when the page changes
+            labelType: NavigationRailLabelType.all,
+            onDestinationSelected: (value) {
+              setState(() {
+                pageController.animateToPage(value,
+                    duration: pageAnimationDuartion, curve: pageAnimationCurve);
+              });
+            },
+            destinations: List.generate(widget.pages.length, (index) {
+              return NavigationRailDestination(
+                  icon: Icon(widget.pages[index].icon),
+                  label: Text(widget.pages[index].title));
+            }),
+          ),
+          body: PageView(
+            key: pageViewKey,
+            controller: pageController,
+            scrollDirection: Axis.vertical,
+            children: List.generate(
+              widget.pages.length,
+              (index) {
+                return widget.pages[index].page;
+              },
+            ),
+          )),
+    );
   }
 
   @override
