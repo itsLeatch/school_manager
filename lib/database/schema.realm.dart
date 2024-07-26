@@ -11,11 +11,15 @@ class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
   Subject(
     ObjectId id,
     String name,
-    String colorCode,
+    int colorR,
+    int colorG,
+    int colorB,
   ) {
     RealmObjectBase.set(this, '_id', id);
     RealmObjectBase.set(this, 'name', name);
-    RealmObjectBase.set(this, 'colorCode', colorCode);
+    RealmObjectBase.set(this, 'colorR', colorR);
+    RealmObjectBase.set(this, 'colorG', colorG);
+    RealmObjectBase.set(this, 'colorB', colorB);
   }
 
   Subject._();
@@ -31,10 +35,19 @@ class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
   set name(String value) => RealmObjectBase.set(this, 'name', value);
 
   @override
-  String get colorCode =>
-      RealmObjectBase.get<String>(this, 'colorCode') as String;
+  int get colorR => RealmObjectBase.get<int>(this, 'colorR') as int;
   @override
-  set colorCode(String value) => RealmObjectBase.set(this, 'colorCode', value);
+  set colorR(int value) => RealmObjectBase.set(this, 'colorR', value);
+
+  @override
+  int get colorG => RealmObjectBase.get<int>(this, 'colorG') as int;
+  @override
+  set colorG(int value) => RealmObjectBase.set(this, 'colorG', value);
+
+  @override
+  int get colorB => RealmObjectBase.get<int>(this, 'colorB') as int;
+  @override
+  set colorB(int value) => RealmObjectBase.set(this, 'colorB', value);
 
   @override
   Stream<RealmObjectChanges<Subject>> get changes =>
@@ -51,7 +64,9 @@ class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
     return <String, dynamic>{
       '_id': id.toEJson(),
       'name': name.toEJson(),
-      'colorCode': colorCode.toEJson(),
+      'colorR': colorR.toEJson(),
+      'colorG': colorG.toEJson(),
+      'colorB': colorB.toEJson(),
     };
   }
 
@@ -61,12 +76,16 @@ class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
       {
         '_id': EJsonValue id,
         'name': EJsonValue name,
-        'colorCode': EJsonValue colorCode,
+        'colorR': EJsonValue colorR,
+        'colorG': EJsonValue colorG,
+        'colorB': EJsonValue colorB,
       } =>
         Subject(
           fromEJson(id),
           fromEJson(name),
-          fromEJson(colorCode),
+          fromEJson(colorR),
+          fromEJson(colorG),
+          fromEJson(colorB),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -79,7 +98,9 @@ class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
       SchemaProperty('name', RealmPropertyType.string),
-      SchemaProperty('colorCode', RealmPropertyType.string),
+      SchemaProperty('colorR', RealmPropertyType.int),
+      SchemaProperty('colorG', RealmPropertyType.int),
+      SchemaProperty('colorB', RealmPropertyType.int),
     ]);
   }();
 

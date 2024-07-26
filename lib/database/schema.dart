@@ -10,8 +10,10 @@ class _Subject {
   late ObjectId id;
 
   late String name;
-  //The color in hex format
-  late String colorCode;  
+  
+  late int colorR;
+  late int colorG;
+  late int colorB;
 }
 // for every new school year a new collection of marks is created
 @RealmModel()

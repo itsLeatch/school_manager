@@ -13,7 +13,7 @@ class AppPage {
 }
 
 class _AppState {
-  Realm database = Realm(Configuration.local([
+  Realm database = Realm(Configuration.local(shouldDeleteIfMigrationNeeded: true,[
     Subject.schema,
     MarkCollection.schema,
     SubjectMarksPerCollection.schema
