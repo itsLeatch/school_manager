@@ -15,8 +15,11 @@ class AppPage {
 class _AppState {
   Realm database = Realm(Configuration.local(shouldDeleteIfMigrationNeeded: true,[
     Subject.schema,
-    MarkCollection.schema,
-    SubjectMarksPerCollection.schema
+    TermPaperType.schema,
+    TermPaper.schema,
+    RealmColor.schema,
+    SchoolYear.schema
+
   ]));
 }
 

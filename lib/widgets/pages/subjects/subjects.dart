@@ -26,8 +26,7 @@ class SubjectListTile extends StatelessWidget {
         } ,
           child: Container(
             decoration: BoxDecoration(
-              color: Color.fromARGB(
-                  255, subject.colorR, subject.colorG, subject.colorB),
+              color: subject.color?.toFlutterColor(),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Padding(
@@ -113,9 +112,7 @@ class _SubjectPageState extends State<SubjectPage> {
                     if (value != null) {
                       appState.database.write(() {
                         subject.name = value.name;
-                        subject.colorR = value.colorR;
-                        subject.colorG = value.colorG;
-                        subject.colorB = value.colorB;
+                        subject.color = value.color;
                       });
                     }
                   });

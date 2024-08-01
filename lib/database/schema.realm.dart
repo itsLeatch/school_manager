@@ -7,32 +7,28 @@ part of 'schema.dart';
 // **************************************************************************
 
 // ignore_for_file: type=lint
-class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
-  Subject(
+class RealmColor extends _RealmColor
+    with RealmEntity, RealmObjectBase, RealmObject {
+  RealmColor(
     ObjectId id,
-    String name,
     int colorR,
     int colorG,
     int colorB,
+    int alpha,
   ) {
     RealmObjectBase.set(this, '_id', id);
-    RealmObjectBase.set(this, 'name', name);
     RealmObjectBase.set(this, 'colorR', colorR);
     RealmObjectBase.set(this, 'colorG', colorG);
     RealmObjectBase.set(this, 'colorB', colorB);
+    RealmObjectBase.set(this, 'alpha', alpha);
   }
 
-  Subject._();
+  RealmColor._();
 
   @override
   ObjectId get id => RealmObjectBase.get<ObjectId>(this, '_id') as ObjectId;
   @override
   set id(ObjectId value) => RealmObjectBase.set(this, '_id', value);
-
-  @override
-  String get name => RealmObjectBase.get<String>(this, 'name') as String;
-  @override
-  set name(String value) => RealmObjectBase.set(this, 'name', value);
 
   @override
   int get colorR => RealmObjectBase.get<int>(this, 'colorR') as int;
@@ -50,6 +46,100 @@ class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
   set colorB(int value) => RealmObjectBase.set(this, 'colorB', value);
 
   @override
+  int get alpha => RealmObjectBase.get<int>(this, 'alpha') as int;
+  @override
+  set alpha(int value) => RealmObjectBase.set(this, 'alpha', value);
+
+  @override
+  Stream<RealmObjectChanges<RealmColor>> get changes =>
+      RealmObjectBase.getChanges<RealmColor>(this);
+
+  @override
+  Stream<RealmObjectChanges<RealmColor>> changesFor([List<String>? keyPaths]) =>
+      RealmObjectBase.getChangesFor<RealmColor>(this, keyPaths);
+
+  @override
+  RealmColor freeze() => RealmObjectBase.freezeObject<RealmColor>(this);
+
+  EJsonValue toEJson() {
+    return <String, dynamic>{
+      '_id': id.toEJson(),
+      'colorR': colorR.toEJson(),
+      'colorG': colorG.toEJson(),
+      'colorB': colorB.toEJson(),
+      'alpha': alpha.toEJson(),
+    };
+  }
+
+  static EJsonValue _toEJson(RealmColor value) => value.toEJson();
+  static RealmColor _fromEJson(EJsonValue ejson) {
+    return switch (ejson) {
+      {
+        '_id': EJsonValue id,
+        'colorR': EJsonValue colorR,
+        'colorG': EJsonValue colorG,
+        'colorB': EJsonValue colorB,
+        'alpha': EJsonValue alpha,
+      } =>
+        RealmColor(
+          fromEJson(id),
+          fromEJson(colorR),
+          fromEJson(colorG),
+          fromEJson(colorB),
+          fromEJson(alpha),
+        ),
+      _ => raiseInvalidEJson(ejson),
+    };
+  }
+
+  static final schema = () {
+    RealmObjectBase.registerFactory(RealmColor._);
+    register(_toEJson, _fromEJson);
+    return SchemaObject(ObjectType.realmObject, RealmColor, 'RealmColor', [
+      SchemaProperty('id', RealmPropertyType.objectid,
+          mapTo: '_id', primaryKey: true),
+      SchemaProperty('colorR', RealmPropertyType.int),
+      SchemaProperty('colorG', RealmPropertyType.int),
+      SchemaProperty('colorB', RealmPropertyType.int),
+      SchemaProperty('alpha', RealmPropertyType.int),
+    ]);
+  }();
+
+  @override
+  SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
+}
+
+class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
+  Subject(
+    ObjectId id,
+    String name, {
+    RealmColor? color,
+  }) {
+    RealmObjectBase.set(this, '_id', id);
+    RealmObjectBase.set(this, 'name', name);
+    RealmObjectBase.set(this, 'color', color);
+  }
+
+  Subject._();
+
+  @override
+  ObjectId get id => RealmObjectBase.get<ObjectId>(this, '_id') as ObjectId;
+  @override
+  set id(ObjectId value) => RealmObjectBase.set(this, '_id', value);
+
+  @override
+  String get name => RealmObjectBase.get<String>(this, 'name') as String;
+  @override
+  set name(String value) => RealmObjectBase.set(this, 'name', value);
+
+  @override
+  RealmColor? get color =>
+      RealmObjectBase.get<RealmColor>(this, 'color') as RealmColor?;
+  @override
+  set color(covariant RealmColor? value) =>
+      RealmObjectBase.set(this, 'color', value);
+
+  @override
   Stream<RealmObjectChanges<Subject>> get changes =>
       RealmObjectBase.getChanges<Subject>(this);
 
@@ -64,9 +154,7 @@ class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
     return <String, dynamic>{
       '_id': id.toEJson(),
       'name': name.toEJson(),
-      'colorR': colorR.toEJson(),
-      'colorG': colorG.toEJson(),
-      'colorB': colorB.toEJson(),
+      'color': color.toEJson(),
     };
   }
 
@@ -76,16 +164,12 @@ class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
       {
         '_id': EJsonValue id,
         'name': EJsonValue name,
-        'colorR': EJsonValue colorR,
-        'colorG': EJsonValue colorG,
-        'colorB': EJsonValue colorB,
+        'color': EJsonValue color,
       } =>
         Subject(
           fromEJson(id),
           fromEJson(name),
-          fromEJson(colorR),
-          fromEJson(colorG),
-          fromEJson(colorB),
+          color: fromEJson(color),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -98,9 +182,8 @@ class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
       SchemaProperty('name', RealmPropertyType.string),
-      SchemaProperty('colorR', RealmPropertyType.int),
-      SchemaProperty('colorG', RealmPropertyType.int),
-      SchemaProperty('colorB', RealmPropertyType.int),
+      SchemaProperty('color', RealmPropertyType.object,
+          optional: true, linkTarget: 'RealmColor'),
     ]);
   }();
 
@@ -108,20 +191,19 @@ class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
   SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
 }
 
-class MarkCollection extends _MarkCollection
+class TermPaperType extends _TermPaperType
     with RealmEntity, RealmObjectBase, RealmObject {
-  MarkCollection(
+  TermPaperType(
     ObjectId id,
     String name, {
-    Iterable<SubjectMarksPerCollection> subjectMarks = const [],
+    RealmColor? color,
   }) {
     RealmObjectBase.set(this, '_id', id);
     RealmObjectBase.set(this, 'name', name);
-    RealmObjectBase.set<RealmList<SubjectMarksPerCollection>>(this,
-        'subjectMarks', RealmList<SubjectMarksPerCollection>(subjectMarks));
+    RealmObjectBase.set(this, 'color', color);
   }
 
-  MarkCollection._();
+  TermPaperType._();
 
   @override
   ObjectId get id => RealmObjectBase.get<ObjectId>(this, '_id') as ObjectId;
@@ -134,61 +216,59 @@ class MarkCollection extends _MarkCollection
   set name(String value) => RealmObjectBase.set(this, 'name', value);
 
   @override
-  RealmList<SubjectMarksPerCollection> get subjectMarks =>
-      RealmObjectBase.get<SubjectMarksPerCollection>(this, 'subjectMarks')
-          as RealmList<SubjectMarksPerCollection>;
+  RealmColor? get color =>
+      RealmObjectBase.get<RealmColor>(this, 'color') as RealmColor?;
   @override
-  set subjectMarks(covariant RealmList<SubjectMarksPerCollection> value) =>
-      throw RealmUnsupportedSetError();
+  set color(covariant RealmColor? value) =>
+      RealmObjectBase.set(this, 'color', value);
 
   @override
-  Stream<RealmObjectChanges<MarkCollection>> get changes =>
-      RealmObjectBase.getChanges<MarkCollection>(this);
+  Stream<RealmObjectChanges<TermPaperType>> get changes =>
+      RealmObjectBase.getChanges<TermPaperType>(this);
 
   @override
-  Stream<RealmObjectChanges<MarkCollection>> changesFor(
+  Stream<RealmObjectChanges<TermPaperType>> changesFor(
           [List<String>? keyPaths]) =>
-      RealmObjectBase.getChangesFor<MarkCollection>(this, keyPaths);
+      RealmObjectBase.getChangesFor<TermPaperType>(this, keyPaths);
 
   @override
-  MarkCollection freeze() => RealmObjectBase.freezeObject<MarkCollection>(this);
+  TermPaperType freeze() => RealmObjectBase.freezeObject<TermPaperType>(this);
 
   EJsonValue toEJson() {
     return <String, dynamic>{
       '_id': id.toEJson(),
       'name': name.toEJson(),
-      'subjectMarks': subjectMarks.toEJson(),
+      'color': color.toEJson(),
     };
   }
 
-  static EJsonValue _toEJson(MarkCollection value) => value.toEJson();
-  static MarkCollection _fromEJson(EJsonValue ejson) {
+  static EJsonValue _toEJson(TermPaperType value) => value.toEJson();
+  static TermPaperType _fromEJson(EJsonValue ejson) {
     return switch (ejson) {
       {
         '_id': EJsonValue id,
         'name': EJsonValue name,
-        'subjectMarks': EJsonValue subjectMarks,
+        'color': EJsonValue color,
       } =>
-        MarkCollection(
+        TermPaperType(
           fromEJson(id),
           fromEJson(name),
-          subjectMarks: fromEJson(subjectMarks),
+          color: fromEJson(color),
         ),
       _ => raiseInvalidEJson(ejson),
     };
   }
 
   static final schema = () {
-    RealmObjectBase.registerFactory(MarkCollection._);
+    RealmObjectBase.registerFactory(TermPaperType._);
     register(_toEJson, _fromEJson);
     return SchemaObject(
-        ObjectType.realmObject, MarkCollection, 'MarkCollection', [
+        ObjectType.realmObject, TermPaperType, 'TermPaperType', [
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
       SchemaProperty('name', RealmPropertyType.string),
-      SchemaProperty('subjectMarks', RealmPropertyType.object,
-          linkTarget: 'SubjectMarksPerCollection',
-          collectionType: RealmCollectionType.list),
+      SchemaProperty('color', RealmPropertyType.object,
+          optional: true, linkTarget: 'RealmColor'),
     ]);
   }();
 
@@ -196,19 +276,27 @@ class MarkCollection extends _MarkCollection
   SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
 }
 
-class SubjectMarksPerCollection extends _SubjectMarksPerCollection
+class TermPaper extends _TermPaper
     with RealmEntity, RealmObjectBase, RealmObject {
-  SubjectMarksPerCollection(
-    ObjectId id, {
-    Subject? subjectReferenz,
-    Iterable<int> marks = const [],
+  TermPaper(
+    ObjectId id,
+    String name,
+    String description,
+    DateTime deadline, {
+    Subject? subject,
+    TermPaperType? type,
+    double? mark,
   }) {
     RealmObjectBase.set(this, '_id', id);
-    RealmObjectBase.set(this, 'subjectReferenz', subjectReferenz);
-    RealmObjectBase.set<RealmList<int>>(this, 'marks', RealmList<int>(marks));
+    RealmObjectBase.set(this, 'name', name);
+    RealmObjectBase.set(this, 'description', description);
+    RealmObjectBase.set(this, 'subject', subject);
+    RealmObjectBase.set(this, 'type', type);
+    RealmObjectBase.set(this, 'deadline', deadline);
+    RealmObjectBase.set(this, 'mark', mark);
   }
 
-  SubjectMarksPerCollection._();
+  TermPaper._();
 
   @override
   ObjectId get id => RealmObjectBase.get<ObjectId>(this, '_id') as ObjectId;
@@ -216,68 +304,196 @@ class SubjectMarksPerCollection extends _SubjectMarksPerCollection
   set id(ObjectId value) => RealmObjectBase.set(this, '_id', value);
 
   @override
-  Subject? get subjectReferenz =>
-      RealmObjectBase.get<Subject>(this, 'subjectReferenz') as Subject?;
+  String get name => RealmObjectBase.get<String>(this, 'name') as String;
   @override
-  set subjectReferenz(covariant Subject? value) =>
-      RealmObjectBase.set(this, 'subjectReferenz', value);
+  set name(String value) => RealmObjectBase.set(this, 'name', value);
 
   @override
-  RealmList<int> get marks =>
-      RealmObjectBase.get<int>(this, 'marks') as RealmList<int>;
+  String get description =>
+      RealmObjectBase.get<String>(this, 'description') as String;
   @override
-  set marks(covariant RealmList<int> value) => throw RealmUnsupportedSetError();
+  set description(String value) =>
+      RealmObjectBase.set(this, 'description', value);
 
   @override
-  Stream<RealmObjectChanges<SubjectMarksPerCollection>> get changes =>
-      RealmObjectBase.getChanges<SubjectMarksPerCollection>(this);
+  Subject? get subject =>
+      RealmObjectBase.get<Subject>(this, 'subject') as Subject?;
+  @override
+  set subject(covariant Subject? value) =>
+      RealmObjectBase.set(this, 'subject', value);
 
   @override
-  Stream<RealmObjectChanges<SubjectMarksPerCollection>> changesFor(
-          [List<String>? keyPaths]) =>
-      RealmObjectBase.getChangesFor<SubjectMarksPerCollection>(this, keyPaths);
+  TermPaperType? get type =>
+      RealmObjectBase.get<TermPaperType>(this, 'type') as TermPaperType?;
+  @override
+  set type(covariant TermPaperType? value) =>
+      RealmObjectBase.set(this, 'type', value);
 
   @override
-  SubjectMarksPerCollection freeze() =>
-      RealmObjectBase.freezeObject<SubjectMarksPerCollection>(this);
+  DateTime get deadline =>
+      RealmObjectBase.get<DateTime>(this, 'deadline') as DateTime;
+  @override
+  set deadline(DateTime value) => RealmObjectBase.set(this, 'deadline', value);
+
+  @override
+  double? get mark => RealmObjectBase.get<double>(this, 'mark') as double?;
+  @override
+  set mark(double? value) => RealmObjectBase.set(this, 'mark', value);
+
+  @override
+  Stream<RealmObjectChanges<TermPaper>> get changes =>
+      RealmObjectBase.getChanges<TermPaper>(this);
+
+  @override
+  Stream<RealmObjectChanges<TermPaper>> changesFor([List<String>? keyPaths]) =>
+      RealmObjectBase.getChangesFor<TermPaper>(this, keyPaths);
+
+  @override
+  TermPaper freeze() => RealmObjectBase.freezeObject<TermPaper>(this);
 
   EJsonValue toEJson() {
     return <String, dynamic>{
       '_id': id.toEJson(),
-      'subjectReferenz': subjectReferenz.toEJson(),
-      'marks': marks.toEJson(),
+      'name': name.toEJson(),
+      'description': description.toEJson(),
+      'subject': subject.toEJson(),
+      'type': type.toEJson(),
+      'deadline': deadline.toEJson(),
+      'mark': mark.toEJson(),
     };
   }
 
-  static EJsonValue _toEJson(SubjectMarksPerCollection value) =>
-      value.toEJson();
-  static SubjectMarksPerCollection _fromEJson(EJsonValue ejson) {
+  static EJsonValue _toEJson(TermPaper value) => value.toEJson();
+  static TermPaper _fromEJson(EJsonValue ejson) {
     return switch (ejson) {
       {
         '_id': EJsonValue id,
-        'subjectReferenz': EJsonValue subjectReferenz,
-        'marks': EJsonValue marks,
+        'name': EJsonValue name,
+        'description': EJsonValue description,
+        'subject': EJsonValue subject,
+        'type': EJsonValue type,
+        'deadline': EJsonValue deadline,
+        'mark': EJsonValue mark,
       } =>
-        SubjectMarksPerCollection(
+        TermPaper(
           fromEJson(id),
-          subjectReferenz: fromEJson(subjectReferenz),
-          marks: fromEJson(marks),
+          fromEJson(name),
+          fromEJson(description),
+          fromEJson(deadline),
+          subject: fromEJson(subject),
+          type: fromEJson(type),
+          mark: fromEJson(mark),
         ),
       _ => raiseInvalidEJson(ejson),
     };
   }
 
   static final schema = () {
-    RealmObjectBase.registerFactory(SubjectMarksPerCollection._);
+    RealmObjectBase.registerFactory(TermPaper._);
     register(_toEJson, _fromEJson);
-    return SchemaObject(ObjectType.realmObject, SubjectMarksPerCollection,
-        'SubjectMarksPerCollection', [
+    return SchemaObject(ObjectType.realmObject, TermPaper, 'TermPaper', [
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
-      SchemaProperty('subjectReferenz', RealmPropertyType.object,
+      SchemaProperty('name', RealmPropertyType.string),
+      SchemaProperty('description', RealmPropertyType.string),
+      SchemaProperty('subject', RealmPropertyType.object,
           optional: true, linkTarget: 'Subject'),
-      SchemaProperty('marks', RealmPropertyType.int,
-          collectionType: RealmCollectionType.list),
+      SchemaProperty('type', RealmPropertyType.object,
+          optional: true, linkTarget: 'TermPaperType'),
+      SchemaProperty('deadline', RealmPropertyType.timestamp),
+      SchemaProperty('mark', RealmPropertyType.double, optional: true),
+    ]);
+  }();
+
+  @override
+  SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
+}
+
+class SchoolYear extends _SchoolYear
+    with RealmEntity, RealmObjectBase, RealmObject {
+  SchoolYear(
+    ObjectId id,
+    String name,
+    DateTime start,
+    DateTime end,
+  ) {
+    RealmObjectBase.set(this, '_id', id);
+    RealmObjectBase.set(this, 'name', name);
+    RealmObjectBase.set(this, 'start', start);
+    RealmObjectBase.set(this, 'end', end);
+  }
+
+  SchoolYear._();
+
+  @override
+  ObjectId get id => RealmObjectBase.get<ObjectId>(this, '_id') as ObjectId;
+  @override
+  set id(ObjectId value) => RealmObjectBase.set(this, '_id', value);
+
+  @override
+  String get name => RealmObjectBase.get<String>(this, 'name') as String;
+  @override
+  set name(String value) => RealmObjectBase.set(this, 'name', value);
+
+  @override
+  DateTime get start =>
+      RealmObjectBase.get<DateTime>(this, 'start') as DateTime;
+  @override
+  set start(DateTime value) => RealmObjectBase.set(this, 'start', value);
+
+  @override
+  DateTime get end => RealmObjectBase.get<DateTime>(this, 'end') as DateTime;
+  @override
+  set end(DateTime value) => RealmObjectBase.set(this, 'end', value);
+
+  @override
+  Stream<RealmObjectChanges<SchoolYear>> get changes =>
+      RealmObjectBase.getChanges<SchoolYear>(this);
+
+  @override
+  Stream<RealmObjectChanges<SchoolYear>> changesFor([List<String>? keyPaths]) =>
+      RealmObjectBase.getChangesFor<SchoolYear>(this, keyPaths);
+
+  @override
+  SchoolYear freeze() => RealmObjectBase.freezeObject<SchoolYear>(this);
+
+  EJsonValue toEJson() {
+    return <String, dynamic>{
+      '_id': id.toEJson(),
+      'name': name.toEJson(),
+      'start': start.toEJson(),
+      'end': end.toEJson(),
+    };
+  }
+
+  static EJsonValue _toEJson(SchoolYear value) => value.toEJson();
+  static SchoolYear _fromEJson(EJsonValue ejson) {
+    return switch (ejson) {
+      {
+        '_id': EJsonValue id,
+        'name': EJsonValue name,
+        'start': EJsonValue start,
+        'end': EJsonValue end,
+      } =>
+        SchoolYear(
+          fromEJson(id),
+          fromEJson(name),
+          fromEJson(start),
+          fromEJson(end),
+        ),
+      _ => raiseInvalidEJson(ejson),
+    };
+  }
+
+  static final schema = () {
+    RealmObjectBase.registerFactory(SchoolYear._);
+    register(_toEJson, _fromEJson);
+    return SchemaObject(ObjectType.realmObject, SchoolYear, 'SchoolYear', [
+      SchemaProperty('id', RealmPropertyType.objectid,
+          mapTo: '_id', primaryKey: true),
+      SchemaProperty('name', RealmPropertyType.string),
+      SchemaProperty('start', RealmPropertyType.timestamp),
+      SchemaProperty('end', RealmPropertyType.timestamp),
     ]);
   }();
 

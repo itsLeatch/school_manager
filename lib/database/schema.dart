@@ -1,6 +1,31 @@
+import 'package:flutter/material.dart';
 import 'package:realm/realm.dart';  // import realm package
 
 part 'schema.realm.dart'; // declare a part file.
+
+@RealmModel() 
+class _RealmColor {
+  @PrimaryKey()
+  @MapTo('_id')
+  late ObjectId id;
+
+  late int colorR;
+  late int colorG;
+  late int colorB;
+  late int alpha;
+  
+    _RealmColor FromFlutterColor(Color color) {
+    return _RealmColor()
+      ..colorR = color.red
+      ..colorG = color.green
+      ..colorB = color.blue
+      ..alpha = color.alpha;
+  }
+
+  Color toFlutterColor() {
+    return Color.fromARGB(alpha, colorR, colorG, colorB);
+  }
+}
 
 //the basic informations about a subject
 @RealmModel() 
@@ -10,30 +35,42 @@ class _Subject {
   late ObjectId id;
 
   late String name;
-  
-  late int colorR;
-  late int colorG;
-  late int colorB;
+  late _RealmColor? color;
 }
-// for every new school year a new collection of marks is created
+
 @RealmModel()
-class _MarkCollection {
+class _TermPaperType {
   @PrimaryKey()
   @MapTo('_id')
   late ObjectId id;
 
   late String name;
-  late List<_SubjectMarksPerCollection> subjectMarks;
+  late _RealmColor? color;
+
 }
 
-// the marks for a subject in a collection are store here
-@RealmModel() 
-class _SubjectMarksPerCollection {
+
+@RealmModel()
+class _TermPaper {
   @PrimaryKey()
   @MapTo('_id')
   late ObjectId id;
 
-  late _Subject? subjectReferenz;
-  //The color in hex format
-  late List<int> marks; 
+  late String name;
+  late String description;
+  late _Subject? subject;
+  late _TermPaperType? type;
+  late DateTime deadline;
+  late double? mark;
+}
+
+@RealmModel()
+class _SchoolYear {
+  @PrimaryKey()
+  @MapTo('_id')
+  late ObjectId id;
+
+  late String name;
+  late DateTime start;
+  late DateTime end;
 }

@@ -8,7 +8,7 @@ Future<Subject?> showAddSubjectDialog(BuildContext context, Subject? initSubject
   Color color = Colors.cyan;
 
   if(initSubject != null) {
-    color = Color.fromARGB(255, initSubject.colorR, initSubject.colorG, initSubject.colorB);
+    color = initSubject.color?.toFlutterColor() ?? Colors.cyan;
   }
 
   return showDialog<Subject>(
@@ -41,7 +41,7 @@ Future<Subject?> showAddSubjectDialog(BuildContext context, Subject? initSubject
             FilledButton(
                 onPressed: () {
                   Navigator.of(context).pop(Subject(
-                      ObjectId(), name, color.red, color.green, color.blue));
+                      ObjectId(), name, color: RealmColor(ObjectId(),color.red, color.green, color.blue, color.alpha)));
                 },
                 child: Text("OK"))
           ],
