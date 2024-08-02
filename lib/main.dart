@@ -3,6 +3,7 @@ import 'package:realm/realm.dart';
 import 'package:school_manager/database/schema.dart';
 import 'package:school_manager/widgets/basic/appScaffold.dart';
 import 'package:school_manager/widgets/pages/schoolyear/addSchoolyear.dart';
+import 'package:school_manager/widgets/pages/schoolyear/schoolyears.dart';
 import 'package:school_manager/widgets/pages/subjects/addSubjectDialog.dart';
 import 'package:school_manager/widgets/pages/subjects/subjects.dart';
 
@@ -38,11 +39,7 @@ void main() {
         )),
     AppPage("Subjects", Icons.book, SubjectPage()),
     AppPage("Marks", Icons.grade, Container(color: Colors.yellow)),
-    AppPage("Schoolyears", Icons.school, Container(color: Colors.green,child: Builder(
-      builder: (context) {
-        return TextButton(onPressed: () => showAddSchoolyearDialog(context, null),child: Text("add schoolyear"),);
-      }
-    ),)),
+    AppPage("Schoolyears", Icons.school, SchoolYearPage()),
   ]));
 }
 
