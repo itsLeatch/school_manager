@@ -415,10 +415,12 @@ class SchoolYear extends _SchoolYear
     ObjectId id,
     String name,
     DateTime start,
-    DateTime end,
-  ) {
+    DateTime end, {
+    RealmColor? color,
+  }) {
     RealmObjectBase.set(this, '_id', id);
     RealmObjectBase.set(this, 'name', name);
+    RealmObjectBase.set(this, 'color', color);
     RealmObjectBase.set(this, 'start', start);
     RealmObjectBase.set(this, 'end', end);
   }
@@ -434,6 +436,13 @@ class SchoolYear extends _SchoolYear
   String get name => RealmObjectBase.get<String>(this, 'name') as String;
   @override
   set name(String value) => RealmObjectBase.set(this, 'name', value);
+
+  @override
+  RealmColor? get color =>
+      RealmObjectBase.get<RealmColor>(this, 'color') as RealmColor?;
+  @override
+  set color(covariant RealmColor? value) =>
+      RealmObjectBase.set(this, 'color', value);
 
   @override
   DateTime get start =>
@@ -461,6 +470,7 @@ class SchoolYear extends _SchoolYear
     return <String, dynamic>{
       '_id': id.toEJson(),
       'name': name.toEJson(),
+      'color': color.toEJson(),
       'start': start.toEJson(),
       'end': end.toEJson(),
     };
@@ -472,6 +482,7 @@ class SchoolYear extends _SchoolYear
       {
         '_id': EJsonValue id,
         'name': EJsonValue name,
+        'color': EJsonValue color,
         'start': EJsonValue start,
         'end': EJsonValue end,
       } =>
@@ -480,6 +491,7 @@ class SchoolYear extends _SchoolYear
           fromEJson(name),
           fromEJson(start),
           fromEJson(end),
+          color: fromEJson(color),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -492,6 +504,8 @@ class SchoolYear extends _SchoolYear
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
       SchemaProperty('name', RealmPropertyType.string),
+      SchemaProperty('color', RealmPropertyType.object,
+          optional: true, linkTarget: 'RealmColor'),
       SchemaProperty('start', RealmPropertyType.timestamp),
       SchemaProperty('end', RealmPropertyType.timestamp),
     ]);

@@ -71,6 +71,7 @@ class _SchoolYear {
   late ObjectId id;
 
   late String name;
+  late _RealmColor? color;
   late DateTime start;
   late DateTime end;
 }
