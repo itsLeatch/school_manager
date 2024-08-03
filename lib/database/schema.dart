@@ -39,19 +39,20 @@ class _Subject {
 }
 
 @RealmModel()
-class _TermPaperType {
+class _EventType {
   @PrimaryKey()
   @MapTo('_id')
   late ObjectId id;
 
   late String name;
+  late bool isTermPaper;
   late _RealmColor? color;
 
 }
 
 
 @RealmModel()
-class _TermPaper {
+class _Event {
   @PrimaryKey()
   @MapTo('_id')
   late ObjectId id;
@@ -59,7 +60,7 @@ class _TermPaper {
   late String name;
   late String description;
   late _Subject? subject;
-  late _TermPaperType? type;
+  late _EventType? type;
   late DateTime deadline;
   late double? mark;
 }

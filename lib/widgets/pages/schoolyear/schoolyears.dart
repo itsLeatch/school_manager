@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:realm/realm.dart';
 import 'package:school_manager/database/schema.dart';
 import 'package:school_manager/main.dart';
 import 'package:school_manager/widgets/pages/schoolyear/addSchoolyear.dart';
@@ -17,31 +18,35 @@ class SchoolYearTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 72,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: InkWell(
-           onTap: () {
-          onEdit(schoolYear);
-        } ,
-          child: Container(
-            decoration: BoxDecoration(
-              color: schoolYear.color?.toFlutterColor(),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Center(
-                          child: Text(
-                    schoolYear.name,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ))),
-                  IconButton(onPressed: onRemove, icon: Icon(Icons.delete))
-                ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Dismissible(
+        key: ValueKey<ObjectId>(schoolYear.id),
+        onDismissed: (direction) {
+          onRemove();
+        },
+        background: Container(
+          color: Colors.red,
+          child: Icon(Icons.delete),
+        ),
+        child: SizedBox(
+          height: 72,
+          width: double.infinity,
+          child: InkWell(
+            onTap: () {
+              onEdit(schoolYear);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: schoolYear.color?.toFlutterColor(),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  schoolYear.name,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               ),
             ),
           ),
@@ -67,6 +72,7 @@ class _SchoolYearPageState extends State<SchoolYearPage> {
     schoolYears = realmSchoolYears.toList();
     realmSchoolYears.changes.listen((event) {
       setState(() {
+        realmSchoolYears = appState.database.all<SchoolYear>();
         schoolYears = realmSchoolYears.toList();
       });
     });

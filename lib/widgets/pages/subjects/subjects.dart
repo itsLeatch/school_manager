@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:realm/realm.dart';
 import 'package:school_manager/database/schema.dart';
 import 'package:school_manager/main.dart';
 import 'package:school_manager/widgets/pages/subjects/addSubjectDialog.dart';
@@ -16,31 +17,37 @@ class SubjectListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 72,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: InkWell(
-           onTap: () {
-          onEdit(subject);
-        } ,
-          child: Container(
-            decoration: BoxDecoration(
-              color: subject.color?.toFlutterColor(),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Center(
-                          child: Text(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Dismissible(
+        key: ValueKey<ObjectId>(subject.id),
+        onDismissed: (direction) {
+          onRemove();
+        },
+        background: Container(
+          color: Colors.red,
+          child: Icon(Icons.delete),
+        ),
+        child: SizedBox(
+          height: 64,
+          width: double.infinity,
+          child: InkWell(
+            onTap: () {
+              onEdit(subject);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: subject.color?.toFlutterColor(),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
                     subject.name,
                     style: Theme.of(context).textTheme.headlineMedium,
-                  ))),
-                  IconButton(onPressed: onRemove, icon: Icon(Icons.delete))
-                ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -66,6 +73,7 @@ class _SubjectPageState extends State<SubjectPage> {
     subjects = realmSubjects.toList();
     realmSubjects.changes.listen((event) {
       setState(() {
+        realmSubjects = appState.database.all<Subject>();
         subjects = realmSubjects.toList();
       });
     });

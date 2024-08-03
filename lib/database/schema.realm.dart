@@ -191,19 +191,21 @@ class Subject extends _Subject with RealmEntity, RealmObjectBase, RealmObject {
   SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
 }
 
-class TermPaperType extends _TermPaperType
+class EventType extends _EventType
     with RealmEntity, RealmObjectBase, RealmObject {
-  TermPaperType(
+  EventType(
     ObjectId id,
-    String name, {
+    String name,
+    bool isTermPaper, {
     RealmColor? color,
   }) {
     RealmObjectBase.set(this, '_id', id);
     RealmObjectBase.set(this, 'name', name);
+    RealmObjectBase.set(this, 'isTermPaper', isTermPaper);
     RealmObjectBase.set(this, 'color', color);
   }
 
-  TermPaperType._();
+  EventType._();
 
   @override
   ObjectId get id => RealmObjectBase.get<ObjectId>(this, '_id') as ObjectId;
@@ -216,6 +218,13 @@ class TermPaperType extends _TermPaperType
   set name(String value) => RealmObjectBase.set(this, 'name', value);
 
   @override
+  bool get isTermPaper =>
+      RealmObjectBase.get<bool>(this, 'isTermPaper') as bool;
+  @override
+  set isTermPaper(bool value) =>
+      RealmObjectBase.set(this, 'isTermPaper', value);
+
+  @override
   RealmColor? get color =>
       RealmObjectBase.get<RealmColor>(this, 'color') as RealmColor?;
   @override
@@ -223,36 +232,38 @@ class TermPaperType extends _TermPaperType
       RealmObjectBase.set(this, 'color', value);
 
   @override
-  Stream<RealmObjectChanges<TermPaperType>> get changes =>
-      RealmObjectBase.getChanges<TermPaperType>(this);
+  Stream<RealmObjectChanges<EventType>> get changes =>
+      RealmObjectBase.getChanges<EventType>(this);
 
   @override
-  Stream<RealmObjectChanges<TermPaperType>> changesFor(
-          [List<String>? keyPaths]) =>
-      RealmObjectBase.getChangesFor<TermPaperType>(this, keyPaths);
+  Stream<RealmObjectChanges<EventType>> changesFor([List<String>? keyPaths]) =>
+      RealmObjectBase.getChangesFor<EventType>(this, keyPaths);
 
   @override
-  TermPaperType freeze() => RealmObjectBase.freezeObject<TermPaperType>(this);
+  EventType freeze() => RealmObjectBase.freezeObject<EventType>(this);
 
   EJsonValue toEJson() {
     return <String, dynamic>{
       '_id': id.toEJson(),
       'name': name.toEJson(),
+      'isTermPaper': isTermPaper.toEJson(),
       'color': color.toEJson(),
     };
   }
 
-  static EJsonValue _toEJson(TermPaperType value) => value.toEJson();
-  static TermPaperType _fromEJson(EJsonValue ejson) {
+  static EJsonValue _toEJson(EventType value) => value.toEJson();
+  static EventType _fromEJson(EJsonValue ejson) {
     return switch (ejson) {
       {
         '_id': EJsonValue id,
         'name': EJsonValue name,
+        'isTermPaper': EJsonValue isTermPaper,
         'color': EJsonValue color,
       } =>
-        TermPaperType(
+        EventType(
           fromEJson(id),
           fromEJson(name),
+          fromEJson(isTermPaper),
           color: fromEJson(color),
         ),
       _ => raiseInvalidEJson(ejson),
@@ -260,13 +271,13 @@ class TermPaperType extends _TermPaperType
   }
 
   static final schema = () {
-    RealmObjectBase.registerFactory(TermPaperType._);
+    RealmObjectBase.registerFactory(EventType._);
     register(_toEJson, _fromEJson);
-    return SchemaObject(
-        ObjectType.realmObject, TermPaperType, 'TermPaperType', [
+    return SchemaObject(ObjectType.realmObject, EventType, 'EventType', [
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
       SchemaProperty('name', RealmPropertyType.string),
+      SchemaProperty('isTermPaper', RealmPropertyType.bool),
       SchemaProperty('color', RealmPropertyType.object,
           optional: true, linkTarget: 'RealmColor'),
     ]);
@@ -276,15 +287,14 @@ class TermPaperType extends _TermPaperType
   SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
 }
 
-class TermPaper extends _TermPaper
-    with RealmEntity, RealmObjectBase, RealmObject {
-  TermPaper(
+class Event extends _Event with RealmEntity, RealmObjectBase, RealmObject {
+  Event(
     ObjectId id,
     String name,
     String description,
     DateTime deadline, {
     Subject? subject,
-    TermPaperType? type,
+    EventType? type,
     double? mark,
   }) {
     RealmObjectBase.set(this, '_id', id);
@@ -296,7 +306,7 @@ class TermPaper extends _TermPaper
     RealmObjectBase.set(this, 'mark', mark);
   }
 
-  TermPaper._();
+  Event._();
 
   @override
   ObjectId get id => RealmObjectBase.get<ObjectId>(this, '_id') as ObjectId;
@@ -323,10 +333,10 @@ class TermPaper extends _TermPaper
       RealmObjectBase.set(this, 'subject', value);
 
   @override
-  TermPaperType? get type =>
-      RealmObjectBase.get<TermPaperType>(this, 'type') as TermPaperType?;
+  EventType? get type =>
+      RealmObjectBase.get<EventType>(this, 'type') as EventType?;
   @override
-  set type(covariant TermPaperType? value) =>
+  set type(covariant EventType? value) =>
       RealmObjectBase.set(this, 'type', value);
 
   @override
@@ -341,15 +351,15 @@ class TermPaper extends _TermPaper
   set mark(double? value) => RealmObjectBase.set(this, 'mark', value);
 
   @override
-  Stream<RealmObjectChanges<TermPaper>> get changes =>
-      RealmObjectBase.getChanges<TermPaper>(this);
+  Stream<RealmObjectChanges<Event>> get changes =>
+      RealmObjectBase.getChanges<Event>(this);
 
   @override
-  Stream<RealmObjectChanges<TermPaper>> changesFor([List<String>? keyPaths]) =>
-      RealmObjectBase.getChangesFor<TermPaper>(this, keyPaths);
+  Stream<RealmObjectChanges<Event>> changesFor([List<String>? keyPaths]) =>
+      RealmObjectBase.getChangesFor<Event>(this, keyPaths);
 
   @override
-  TermPaper freeze() => RealmObjectBase.freezeObject<TermPaper>(this);
+  Event freeze() => RealmObjectBase.freezeObject<Event>(this);
 
   EJsonValue toEJson() {
     return <String, dynamic>{
@@ -363,8 +373,8 @@ class TermPaper extends _TermPaper
     };
   }
 
-  static EJsonValue _toEJson(TermPaper value) => value.toEJson();
-  static TermPaper _fromEJson(EJsonValue ejson) {
+  static EJsonValue _toEJson(Event value) => value.toEJson();
+  static Event _fromEJson(EJsonValue ejson) {
     return switch (ejson) {
       {
         '_id': EJsonValue id,
@@ -375,7 +385,7 @@ class TermPaper extends _TermPaper
         'deadline': EJsonValue deadline,
         'mark': EJsonValue mark,
       } =>
-        TermPaper(
+        Event(
           fromEJson(id),
           fromEJson(name),
           fromEJson(description),
@@ -389,9 +399,9 @@ class TermPaper extends _TermPaper
   }
 
   static final schema = () {
-    RealmObjectBase.registerFactory(TermPaper._);
+    RealmObjectBase.registerFactory(Event._);
     register(_toEJson, _fromEJson);
-    return SchemaObject(ObjectType.realmObject, TermPaper, 'TermPaper', [
+    return SchemaObject(ObjectType.realmObject, Event, 'Event', [
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
       SchemaProperty('name', RealmPropertyType.string),
@@ -399,7 +409,7 @@ class TermPaper extends _TermPaper
       SchemaProperty('subject', RealmPropertyType.object,
           optional: true, linkTarget: 'Subject'),
       SchemaProperty('type', RealmPropertyType.object,
-          optional: true, linkTarget: 'TermPaperType'),
+          optional: true, linkTarget: 'EventType'),
       SchemaProperty('deadline', RealmPropertyType.timestamp),
       SchemaProperty('mark', RealmPropertyType.double, optional: true),
     ]);
