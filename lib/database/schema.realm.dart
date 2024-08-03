@@ -290,19 +290,19 @@ class EventType extends _EventType
 class Event extends _Event with RealmEntity, RealmObjectBase, RealmObject {
   Event(
     ObjectId id,
-    String name,
     String description,
-    DateTime deadline, {
+    DateTime deadline,
+    bool isDone, {
     Subject? subject,
     EventType? type,
     double? mark,
   }) {
     RealmObjectBase.set(this, '_id', id);
-    RealmObjectBase.set(this, 'name', name);
     RealmObjectBase.set(this, 'description', description);
     RealmObjectBase.set(this, 'subject', subject);
     RealmObjectBase.set(this, 'type', type);
     RealmObjectBase.set(this, 'deadline', deadline);
+    RealmObjectBase.set(this, 'isDone', isDone);
     RealmObjectBase.set(this, 'mark', mark);
   }
 
@@ -312,11 +312,6 @@ class Event extends _Event with RealmEntity, RealmObjectBase, RealmObject {
   ObjectId get id => RealmObjectBase.get<ObjectId>(this, '_id') as ObjectId;
   @override
   set id(ObjectId value) => RealmObjectBase.set(this, '_id', value);
-
-  @override
-  String get name => RealmObjectBase.get<String>(this, 'name') as String;
-  @override
-  set name(String value) => RealmObjectBase.set(this, 'name', value);
 
   @override
   String get description =>
@@ -346,6 +341,11 @@ class Event extends _Event with RealmEntity, RealmObjectBase, RealmObject {
   set deadline(DateTime value) => RealmObjectBase.set(this, 'deadline', value);
 
   @override
+  bool get isDone => RealmObjectBase.get<bool>(this, 'isDone') as bool;
+  @override
+  set isDone(bool value) => RealmObjectBase.set(this, 'isDone', value);
+
+  @override
   double? get mark => RealmObjectBase.get<double>(this, 'mark') as double?;
   @override
   set mark(double? value) => RealmObjectBase.set(this, 'mark', value);
@@ -364,11 +364,11 @@ class Event extends _Event with RealmEntity, RealmObjectBase, RealmObject {
   EJsonValue toEJson() {
     return <String, dynamic>{
       '_id': id.toEJson(),
-      'name': name.toEJson(),
       'description': description.toEJson(),
       'subject': subject.toEJson(),
       'type': type.toEJson(),
       'deadline': deadline.toEJson(),
+      'isDone': isDone.toEJson(),
       'mark': mark.toEJson(),
     };
   }
@@ -378,18 +378,18 @@ class Event extends _Event with RealmEntity, RealmObjectBase, RealmObject {
     return switch (ejson) {
       {
         '_id': EJsonValue id,
-        'name': EJsonValue name,
         'description': EJsonValue description,
         'subject': EJsonValue subject,
         'type': EJsonValue type,
         'deadline': EJsonValue deadline,
+        'isDone': EJsonValue isDone,
         'mark': EJsonValue mark,
       } =>
         Event(
           fromEJson(id),
-          fromEJson(name),
           fromEJson(description),
           fromEJson(deadline),
+          fromEJson(isDone),
           subject: fromEJson(subject),
           type: fromEJson(type),
           mark: fromEJson(mark),
@@ -404,13 +404,13 @@ class Event extends _Event with RealmEntity, RealmObjectBase, RealmObject {
     return SchemaObject(ObjectType.realmObject, Event, 'Event', [
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
-      SchemaProperty('name', RealmPropertyType.string),
       SchemaProperty('description', RealmPropertyType.string),
       SchemaProperty('subject', RealmPropertyType.object,
           optional: true, linkTarget: 'Subject'),
       SchemaProperty('type', RealmPropertyType.object,
           optional: true, linkTarget: 'EventType'),
       SchemaProperty('deadline', RealmPropertyType.timestamp),
+      SchemaProperty('isDone', RealmPropertyType.bool),
       SchemaProperty('mark', RealmPropertyType.double, optional: true),
     ]);
   }();

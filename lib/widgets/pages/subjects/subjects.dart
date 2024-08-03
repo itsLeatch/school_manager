@@ -78,7 +78,7 @@ class _SubjectPageState extends State<SubjectPage> {
       });
     });
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return SafeArea(

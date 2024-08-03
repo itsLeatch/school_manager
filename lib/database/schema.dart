@@ -57,11 +57,11 @@ class _Event {
   @MapTo('_id')
   late ObjectId id;
 
-  late String name;
   late String description;
   late _Subject? subject;
   late _EventType? type;
   late DateTime deadline;
+  late bool isDone;
   late double? mark;
 }
 

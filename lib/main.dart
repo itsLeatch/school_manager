@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:realm/realm.dart';
 import 'package:school_manager/database/schema.dart';
 import 'package:school_manager/widgets/basic/appScaffold.dart';
+import 'package:school_manager/widgets/pages/Events/events.dart';
 import 'package:school_manager/widgets/pages/schoolyear/addSchoolyear.dart';
 import 'package:school_manager/widgets/pages/schoolyear/schoolyears.dart';
 import 'package:school_manager/widgets/pages/subjects/addSubjectDialog.dart';
@@ -32,11 +33,9 @@ void main() {
   runApp(Homescreen(pages: [
     AppPage("Settings", Icons.settings, Container(color: Colors.blue)),
     AppPage(
-        "Home",
-        Icons.home,
-        Container(
-          color: Colors.red,
-        )),
+        "Events",
+        Icons.task,
+       EventPage()),
     AppPage("Subjects", Icons.book, SubjectPage()),
     AppPage("Marks", Icons.grade, Container(color: Colors.yellow)),
     AppPage("Schoolyears", Icons.school, SchoolYearPage()),
